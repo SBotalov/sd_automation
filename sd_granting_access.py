@@ -5,7 +5,7 @@ import json
 import requests
 import browser_cookie3
 
-import creds 
+import creds as creds 
 
 #connect to jira instance
 jiraOptions = {'server' : creds.url
@@ -113,10 +113,12 @@ else:
     else:
         getProjectCode(approval_comments)
         print(code_role_user)
-        for key, project_code, reporter, project_role in code_role_user:
-            print('Granting access to ' + reporter + ' to ' + project_code + ' project in the scope of ' + key + ' request')
-            if grantAccess(project_code, reporter, project_role) == 201:
-                print('Access to ' + reporter + ' to ' + project_code + ' project successfully granted')
-                resolveIssue(key)
+        for x in code_role_user:
+            print('Granting access to ' + x['reporter'] + ' to ' + x['project_code'] + ' project in the scope of ' + x['key'] + ' request')
+            r = grantAccess(x['project_code'], x['reporter'], x['project_role'])
+            print(r)
+            if str(r) == '201':
+                print('Access to ' + x['reporter'] + ' to ' + x['project_code'] + ' project successfully granted')
+                resolveIssue(x['key'])
             else:
                 print('post request got failed')
